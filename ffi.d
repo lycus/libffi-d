@@ -226,10 +226,11 @@ private
 
     ffi_status initializeCIF(ffi_cif* cif,
                              ffi_type*[] argTypes,
-                             ffi_type* returnType)
+                             ffi_type* returnType,
+                             int abi)
     {
         return ffi_prep_cif(cif,
-                            ffi_abi.FFI_DEFAULT_ABI,
+                            cast(ffi_abi)abi,
                             cast(uint)argTypes.length,
                             returnType,
                             argTypes.ptr);
@@ -238,10 +239,11 @@ private
     ffi_status initializeVarCIF(ffi_cif* cif,
                                 ffi_type*[] argTypes,
                                 uint variadicArgs,
-                                ffi_type* returnType)
+                                ffi_type* returnType,
+                                int abi)
     {
         return ffi_prep_cif_var(cif,
-                                ffi_abi.FFI_DEFAULT_ABI,
+                                cast(ffi_abi)abi,
                                 cast(uint)argTypes.length,
                                 cast(uint)argTypes.length + variadicArgs,
                                 returnType,
@@ -303,6 +305,22 @@ enum FFIStatus
     badABI,
 }
 
+version (X86)
+{
+    enum FFIInterface
+    {
+        platform,
+        stdCall,
+    }
+}
+else
+{
+    enum FFIInterface
+    {
+        platform,
+    }
+}
+
 alias extern (C) void function() FFIFunction;
 
 FFIStatus ffiCall(FFIFunction func,
@@ -310,7 +328,8 @@ FFIStatus ffiCall(FFIFunction func,
                   FFIType[] parameterTypes,
                   uint variadicArgs,
                   void* returnValue,
-                  void*[] argumentValues)
+                  void*[] argumentValues,
+                  FFIInterface abi = FFIInterface.platform)
 in
 {
     assert(func);
@@ -329,13 +348,20 @@ body
 
     ffi_cif cif;
     ffi_status status;
+    int selectedABI = ffi_abi.FFI_DEFAULT_ABI;
+
+    version (Win32)
+    {
+        if (abi == FFIInterface.stdCall)
+            selectedABI = 2; // FFI_STDCALL
+    }
 
     auto retType = publicTypeToPointer(returnType);
 
     if (variadicArgs)
-        status = initializeVarCIF(&cif, argTypes, variadicArgs, retType);
+        status = initializeVarCIF(&cif, argTypes, variadicArgs, retType, selectedABI);
     else
-        status = initializeCIF(&cif, argTypes, retType);
+        status = initializeCIF(&cif, argTypes, retType, selectedABI);
 
     if (status != ffi_status.FFI_OK)
         return cast(FFIStatus)status;
