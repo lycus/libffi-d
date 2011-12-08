@@ -22,16 +22,6 @@ else
 	DFLAGS += -debug -gc
 endif
 
-FFI = $(shell find /usr/local/lib -type f -regex .*/libffi\.a)
-
-ifeq ($(FFI), )
-	FFI = $(shell find /usr/lib -type f -regex .*/libffi\.a)
-
-	ifeq ($(FFI), )
-		FFI = $(shell find /lib -type f -regex .*/libffi\.a)
-	endif
-endif
-
 all: \
 	bin/libffi-d.a
 
@@ -40,6 +30,4 @@ clean:
 
 bin/libffi-d.a: ffi.d
 	-mkdir -p bin; \
-	echo $(FFI); \
-	$(DPLC) $(DFLAGS) -lib ffi.d; \
-	ar -r bin/libffi-d.a $(FFI);
+	$(DPLC) $(DFLAGS) -lib ffi.d;
