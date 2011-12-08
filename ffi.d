@@ -309,6 +309,17 @@ FFIStatus ffiCall(FFIFunction func,
                   uint variadicArgs,
                   void* returnValue,
                   void*[] argumentValues)
+in
+{
+    assert(func);
+    assert(returnType);
+
+    if (returnType != FFIType.ffiVoid)
+        assert(returnValue);
+
+    assert(parameterTypes.length + variadicArgs == argumentValues.length);
+}
+body
 {
     ffi_type*[] argTypes;
 
