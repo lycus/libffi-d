@@ -202,7 +202,6 @@ private
             ffi_type ffi_type_sint64;
             ffi_type ffi_type_float;
             ffi_type ffi_type_double;
-            ffi_type ffi_type_longdouble;
             ffi_type ffi_type_pointer;
         }
 
