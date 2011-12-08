@@ -29,5 +29,5 @@ clean:
 	-rm -f bin/*
 
 bin/libffi-d.a: ffi.d
-	-mkdir -p bin; \
+	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib ffi.d;
