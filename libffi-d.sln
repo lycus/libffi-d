@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "libffi_d", "libffi-d.visualdproj", "{9375480A-9B77-4DE3-B19E-F40FB454A879}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9375480A-9B77-4DE3-B19E-F40FB454A879}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9375480A-9B77-4DE3-B19E-F40FB454A879}.Debug|Win32.Build.0 = Debug|Win32
+		{9375480A-9B77-4DE3-B19E-F40FB454A879}.Release|Win32.ActiveCfg = Release|Win32
+		{9375480A-9B77-4DE3-B19E-F40FB454A879}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
