@@ -305,7 +305,7 @@ enum FFIStatus
     badABI,
 }
 
-version (X86)
+version (Win32)
 {
     enum FFIInterface
     {
