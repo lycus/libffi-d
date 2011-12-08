@@ -189,7 +189,7 @@ private
 
     extern (C)
     {
-        __gshared
+        extern __gshared
         {
             ffi_type ffi_type_void;
             ffi_type ffi_type_uint8;
