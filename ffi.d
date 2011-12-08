@@ -189,19 +189,22 @@ private
 
     extern (C)
     {
-        ffi_type ffi_type_void;
-        ffi_type ffi_type_uint8;
-        ffi_type ffi_type_sint8;
-        ffi_type ffi_type_uint16;
-        ffi_type ffi_type_sint16;
-        ffi_type ffi_type_uint32;
-        ffi_type ffi_type_sint32;
-        ffi_type ffi_type_uint64;
-        ffi_type ffi_type_sint64;
-        ffi_type ffi_type_float;
-        ffi_type ffi_type_double;
-        ffi_type ffi_type_longdouble;
-        ffi_type ffi_type_pointer;
+        __gshared
+        {
+            ffi_type ffi_type_void;
+            ffi_type ffi_type_uint8;
+            ffi_type ffi_type_sint8;
+            ffi_type ffi_type_uint16;
+            ffi_type ffi_type_sint16;
+            ffi_type ffi_type_uint32;
+            ffi_type ffi_type_sint32;
+            ffi_type ffi_type_uint64;
+            ffi_type ffi_type_sint64;
+            ffi_type ffi_type_float;
+            ffi_type ffi_type_double;
+            ffi_type ffi_type_longdouble;
+            ffi_type ffi_type_pointer;
+        }
 
         ffi_status ffi_prep_cif(ffi_cif* cif,
                                 ffi_abi abi,
@@ -312,7 +315,6 @@ FFIStatus ffiCall(FFIFunction func,
 in
 {
     assert(func);
-    assert(returnType);
 
     if (returnType != FFIType.ffiVoid)
         assert(returnValue);
