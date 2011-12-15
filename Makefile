@@ -10,7 +10,7 @@ endif
 
 ifneq ($(BUILD), debug)
 	ifneq ($(BUILD), release)
-		$(error Unknown build mode: $(BUILD))
+		BUILD = debug
 	endif
 endif
 
