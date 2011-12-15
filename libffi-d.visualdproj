@@ -134,7 +134,7 @@
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
   <imppath />
   <fileImppath />
-  <outdir>$(ConfigurationName)</outdir>
+  <outdir>bin/$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
   <objname />
   <libname />
