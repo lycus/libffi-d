@@ -211,12 +211,15 @@ private
                                 ffi_type* rtype,
                                 ffi_type** atypes);
 
-        ffi_status ffi_prep_cif_var(ffi_cif* cif,
-                                    ffi_abi abi,
-                                    uint nfixedargs,
-                                    uint ntotalargs,
-                                    ffi_type* rtype,
-                                    ffi_type** atypes);
+        version (Posix)
+        {
+            ffi_status ffi_prep_cif_var(ffi_cif* cif,
+                                        ffi_abi abi,
+                                        uint nfixedargs,
+                                        uint ntotalargs,
+                                        ffi_type* rtype,
+                                        ffi_type** atypes);
+        }
 
         void ffi_call(ffi_cif* cif,
                       void* fn,
@@ -236,18 +239,21 @@ private
                             argTypes.ptr);
     }
 
-    ffi_status initializeVarCIF(ffi_cif* cif,
-                                ffi_type*[] argTypes,
-                                uint variadicArgs,
-                                ffi_type* returnType,
-                                int abi)
+    version (Posix)
     {
-        return ffi_prep_cif_var(cif,
-                                cast(ffi_abi)abi,
-                                cast(uint)argTypes.length,
-                                cast(uint)argTypes.length + variadicArgs,
-                                returnType,
-                                argTypes.ptr);
+        ffi_status initializeVarCIF(ffi_cif* cif,
+                                    ffi_type*[] argTypes,
+                                    uint variadicArgs,
+                                    ffi_type* returnType,
+                                    int abi)
+        {
+            return ffi_prep_cif_var(cif,
+                                    cast(ffi_abi)abi,
+                                    cast(uint)argTypes.length,
+                                    cast(uint)argTypes.length + variadicArgs,
+                                    returnType,
+                                    argTypes.ptr);
+        }
     }
 
     ffi_type* publicTypeToPointer(FFIType type)
@@ -346,8 +352,6 @@ body
     foreach (param; parameterTypes)
         argTypes ~= publicTypeToPointer(param);
 
-    ffi_cif cif;
-    ffi_status status;
     int selectedABI = ffi_abi.FFI_DEFAULT_ABI;
 
     version (Win32)
@@ -356,12 +360,21 @@ body
             selectedABI = 2; // FFI_STDCALL
     }
 
+    ffi_cif cif;
+    ffi_status status;
     auto retType = publicTypeToPointer(returnType);
 
-    if (variadicArgs)
-        status = initializeVarCIF(&cif, argTypes, variadicArgs, retType, selectedABI);
+    version (Posix)
+    {
+        if (variadicArgs)
+            status = initializeVarCIF(&cif, argTypes, variadicArgs, retType, selectedABI);
+        else
+            status = initializeCIF(&cif, argTypes, retType, selectedABI);
+    }
     else
+    {
         status = initializeCIF(&cif, argTypes, retType, selectedABI);
+    }
 
     if (status != ffi_status.FFI_OK)
         return cast(FFIStatus)status;
