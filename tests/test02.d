@@ -7,6 +7,9 @@ extern (C) void test02(int i)
 
 void main()
 {
-    int value = 24;
-    assert(ffiCall(cast(FFIFunction)&test02, FFIType.ffiVoid, [FFIType.ffiInt], null, [cast(void*)&value]) == FFIStatus.success);
+    auto value = 24;
+    auto ret = FFIType.ffiVoid;
+    auto param = FFIType.ffiInt;
+
+    assert(ffiCall(cast(FFIFunction)&test02, &ret, [&param], null, [cast(void*)&value]) == FFIStatus.success);
 }

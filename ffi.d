@@ -228,53 +228,89 @@ private
                             returnType,
                             argTypes.ptr);
     }
-
-    ffi_type* publicTypeToPointer(FFIType type)
-    {
-        final switch (type)
-        {
-            case FFIType.ffiVoid:
-                return &ffi_type_void;
-            case FFIType.ffiUByte:
-                return &ffi_type_uint8;
-            case FFIType.ffiByte:
-                return &ffi_type_sint8;
-            case FFIType.ffiUShort:
-                return &ffi_type_uint16;
-            case FFIType.ffiShort:
-                return &ffi_type_sint16;
-            case FFIType.ffiUInt:
-                return &ffi_type_uint32;
-            case FFIType.ffiInt:
-                return &ffi_type_sint32;
-            case FFIType.ffiULong:
-                return &ffi_type_uint64;
-            case FFIType.ffiLong:
-                return &ffi_type_sint64;
-            case FFIType.ffiFloat:
-                return &ffi_type_float;
-            case FFIType.ffiDouble:
-                return &ffi_type_double;
-            case FFIType.ffiPointer:
-                return &ffi_type_pointer;
-        }
-    }
 }
 
-enum FFIType
+struct FFIType
 {
-    ffiVoid,
-    ffiUByte,
-    ffiByte,
-    ffiUShort,
-    ffiShort,
-    ffiUInt,
-    ffiInt,
-    ffiULong,
-    ffiLong,
-    ffiFloat,
-    ffiDouble,
-    ffiPointer,
+    private ffi_type* _type;
+
+    private this(ffi_type* type)
+    {
+        _type = type;
+    }
+
+    this(FFIType*[] fields)
+    {
+        _type = new ffi_type();
+        _type.type = 13; // FFI_TYPE_STRUCT
+
+        ffi_type*[] f;
+
+        foreach (fld; fields)
+            f ~= fld._type;
+
+        _type.elements = f.ptr;
+    }
+
+    @property static FFIType ffiVoid()
+    {
+        return FFIType(&ffi_type_void);
+    }
+
+    @property static FFIType ffiByte()
+    {
+        return FFIType(&ffi_type_sint8);
+    }
+
+    @property static FFIType ffiUByte()
+    {
+        return FFIType(&ffi_type_uint8);
+    }
+
+    @property static FFIType ffiShort()
+    {
+        return FFIType(&ffi_type_sint16);
+    }
+
+    @property static FFIType ffiUShort()
+    {
+        return FFIType(&ffi_type_uint16);
+    }
+
+    @property static FFIType ffiInt()
+    {
+        return FFIType(&ffi_type_sint32);
+    }
+
+    @property static FFIType ffiUInt()
+    {
+        return FFIType(&ffi_type_uint32);
+    }
+
+    @property static FFIType ffiLong()
+    {
+        return FFIType(&ffi_type_sint64);
+    }
+
+    @property static FFIType ffiULong()
+    {
+        return FFIType(&ffi_type_uint64);
+    }
+
+    @property static FFIType ffiFloat()
+    {
+        return FFIType(&ffi_type_float);
+    }
+
+    @property static FFIType ffiDouble()
+    {
+        return FFIType(&ffi_type_double);
+    }
+
+    @property static FFIType ffiPointer()
+    {
+        return FFIType(&ffi_type_pointer);
+    }
 }
 
 enum FFIStatus
@@ -303,26 +339,33 @@ else
 alias void function() FFIFunction;
 
 FFIStatus ffiCall(FFIFunction func,
-                  FFIType returnType,
-                  FFIType[] parameterTypes,
+                  FFIType* returnType,
+                  FFIType*[] parameterTypes,
                   void* returnValue,
                   void*[] argumentValues,
                   FFIInterface abi = FFIInterface.platform)
 in
 {
     assert(func);
+    assert(returnType);
 
-    if (returnType != FFIType.ffiVoid)
+    foreach (param; parameterTypes)
+        assert(param);
+
+    if (returnType._type != FFIType.ffiVoid._type)
         assert(returnValue);
 
-    assert(parameterTypes.length == argumentValues.length);
+    foreach (arg; argumentValues)
+        assert(arg);
+
+    assert(argumentValues.length == parameterTypes.length);
 }
 body
 {
     ffi_type*[] argTypes;
 
     foreach (param; parameterTypes)
-        argTypes ~= publicTypeToPointer(param);
+        argTypes ~= param._type;
 
     int selectedABI = ffi_abi.FFI_DEFAULT_ABI;
 
@@ -334,8 +377,7 @@ body
 
     ffi_cif cif;
 
-    auto retType = publicTypeToPointer(returnType);
-    auto status = initializeCIF(&cif, argTypes, retType, selectedABI);
+    auto status = initializeCIF(&cif, argTypes, returnType._type, selectedABI);
 
     if (status != ffi_status.FFI_OK)
         return cast(FFIStatus)status;
