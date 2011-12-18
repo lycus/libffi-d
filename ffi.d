@@ -252,64 +252,93 @@ struct FFIType
         _type.elements = f.ptr;
     }
 
-    @property static FFIType ffiVoid()
+    static this()
     {
-        return FFIType(&ffi_type_void);
+        _ffiVoid = FFIType(&ffi_type_void);
+        _ffiByte = FFIType(&ffi_type_sint8);
+        _ffiUByte = FFIType(&ffi_type_uint8);
+        _ffiShort = FFIType(&ffi_type_sint16);
+        _ffiUShort = FFIType(&ffi_type_uint16);
+        _ffiInt = FFIType(&ffi_type_sint32);
+        _ffiUInt = FFIType(&ffi_type_uint32);
+        _ffiLong = FFIType(&ffi_type_sint64);
+        _ffiULong = FFIType(&ffi_type_uint64);
+        _ffiFloat = FFIType(&ffi_type_float);
+        _ffiDouble = FFIType(&ffi_type_double);
+        _ffiPointer = FFIType(&ffi_type_pointer);
     }
 
-    @property static FFIType ffiByte()
+    private static FFIType _ffiVoid;
+    private static FFIType _ffiByte;
+    private static FFIType _ffiUByte;
+    private static FFIType _ffiShort;
+    private static FFIType _ffiUShort;
+    private static FFIType _ffiInt;
+    private static FFIType _ffiUInt;
+    private static FFIType _ffiLong;
+    private static FFIType _ffiULong;
+    private static FFIType _ffiFloat;
+    private static FFIType _ffiDouble;
+    private static FFIType _ffiPointer;
+
+    @property static FFIType* ffiVoid()
     {
-        return FFIType(&ffi_type_sint8);
+        return &_ffiVoid;
     }
 
-    @property static FFIType ffiUByte()
+    @property static FFIType* ffiByte()
     {
-        return FFIType(&ffi_type_uint8);
+        return &_ffiByte;
     }
 
-    @property static FFIType ffiShort()
+    @property static FFIType* ffiUByte()
     {
-        return FFIType(&ffi_type_sint16);
+        return &_ffiUByte;
     }
 
-    @property static FFIType ffiUShort()
+    @property static FFIType* ffiShort()
     {
-        return FFIType(&ffi_type_uint16);
+        return &_ffiShort;
     }
 
-    @property static FFIType ffiInt()
+    @property static FFIType* ffiUShort()
     {
-        return FFIType(&ffi_type_sint32);
+        return &_ffiUShort;
     }
 
-    @property static FFIType ffiUInt()
+    @property static FFIType* ffiInt()
     {
-        return FFIType(&ffi_type_uint32);
+        return &_ffiInt;
     }
 
-    @property static FFIType ffiLong()
+    @property static FFIType* ffiUInt()
     {
-        return FFIType(&ffi_type_sint64);
+        return &_ffiUInt;
     }
 
-    @property static FFIType ffiULong()
+    @property static FFIType* ffiLong()
     {
-        return FFIType(&ffi_type_uint64);
+        return &_ffiLong;
     }
 
-    @property static FFIType ffiFloat()
+    @property static FFIType* ffiULong()
     {
-        return FFIType(&ffi_type_float);
+        return &_ffiULong;
     }
 
-    @property static FFIType ffiDouble()
+    @property static FFIType* ffiFloat()
     {
-        return FFIType(&ffi_type_double);
+        return &_ffiFloat;
     }
 
-    @property static FFIType ffiPointer()
+    @property static FFIType* ffiDouble()
     {
-        return FFIType(&ffi_type_pointer);
+        return &_ffiDouble;
+    }
+
+    @property static FFIType* ffiPointer()
+    {
+        return &_ffiPointer;
     }
 }
 

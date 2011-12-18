@@ -8,8 +8,7 @@ extern (C) int test01()
 void main()
 {
     int value;
-    auto ret = FFIType.ffiInt;
 
-    assert(ffiCall(cast(FFIFunction)&test01, &ret, null, &value, null) == FFIStatus.success);
+    assert(ffiCall(cast(FFIFunction)&test01, FFIType.ffiInt, null, &value, null) == FFIStatus.success);
     assert(value == 42);
 }
