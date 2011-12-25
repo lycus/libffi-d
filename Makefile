@@ -23,7 +23,7 @@ else
 	DFLAGS += -debug -gc
 endif
 
-.PHONY: all clean install
+.PHONY: all clean install uninstall
 
 all: \
 	bin/libffi-d.a
@@ -34,6 +34,11 @@ clean:
 install: all
 	-mkdir -p $(PREFIX);
 	cp bin/libffi-d.a $(PREFIX)/lib;
+
+uninstall: all
+	if [ -d $(PREFIX) ]; then \
+		rm $(PREFIX)/lib/libffi-d.a; \
+	fi;
 
 bin/libffi-d.a: ffi.d
 	-mkdir -p bin;
