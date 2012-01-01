@@ -15,12 +15,14 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS = -w -wi -ignore -m$(MODEL) -of$@
+DFLAGS += -w -wi -ignore
+DFLAGS += -m$(MODEL) -gc
+DFLAGS += -of$@
 
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline
 else
-	DFLAGS += -debug -gc
+	DFLAGS += -debug
 endif
 
 .PHONY: all clean install uninstall
