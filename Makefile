@@ -15,7 +15,7 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS += -w -wi -ignore
+DFLAGS += -w -wi -ignore -property
 DFLAGS += -m$(MODEL) -gc
 DFLAGS += -of$@
 
