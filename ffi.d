@@ -474,12 +474,16 @@ body
 }
 
 // Parameters: cif, ret, args, data
-alias void function(ffi_cif*, void*, void**, void*) FFIClosureFunction;
+alias void function(void*, void**) FFIClosureFunction;
+
+private extern (C) void closureHandler(ffi_cif* cif, void* ret, void** args, FFIClosureFunction callback)
+{
+    callback(ret, args);
+}
 
 FFIFunction ffiCreateClosure(FFIClosureFunction func,
                              FFIType* returnType,
                              FFIType*[] parameterTypes,
-                             void* data = null,
                              FFIInterface abi = FFIInterface.platform)
 in
 {
@@ -508,7 +512,7 @@ body
     void* code;
     auto mem = cast(ffi_closure*)ffi_closure_alloc(ffi_closure.sizeof, &code);
 
-    if (ffi_prep_closure_loc(mem, &cif, cast(ffi_closure_fun)func, data, code) != ffi_status.FFI_OK)
+    if (ffi_prep_closure_loc(mem, &cif, cast(ffi_closure_fun)&closureHandler, func, code) != ffi_status.FFI_OK)
         return null;
 
     return cast(FFIFunction)code;
