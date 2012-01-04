@@ -1,5 +1,9 @@
-bin/*
 _*/*
+
+bin/*
+build/*
+
+*.lock*
 
 *.suo
 *.user
