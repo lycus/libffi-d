@@ -309,7 +309,7 @@ struct FFIType
         _type.elements = f.ptr;
     }
 
-    static this()
+    shared static this()
     {
         _ffiVoid = FFIType(&ffi_type_void);
         _ffiByte = FFIType(&ffi_type_sint8);
