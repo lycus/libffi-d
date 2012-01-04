@@ -325,18 +325,18 @@ struct FFIType
         _ffiPointer = FFIType(&ffi_type_pointer);
     }
 
-    private static FFIType _ffiVoid;
-    private static FFIType _ffiByte;
-    private static FFIType _ffiUByte;
-    private static FFIType _ffiShort;
-    private static FFIType _ffiUShort;
-    private static FFIType _ffiInt;
-    private static FFIType _ffiUInt;
-    private static FFIType _ffiLong;
-    private static FFIType _ffiULong;
-    private static FFIType _ffiFloat;
-    private static FFIType _ffiDouble;
-    private static FFIType _ffiPointer;
+    private __gshared FFIType _ffiVoid;
+    private __gshared FFIType _ffiByte;
+    private __gshared FFIType _ffiUByte;
+    private __gshared FFIType _ffiShort;
+    private __gshared FFIType _ffiUShort;
+    private __gshared FFIType _ffiInt;
+    private __gshared FFIType _ffiUInt;
+    private __gshared FFIType _ffiLong;
+    private __gshared FFIType _ffiULong;
+    private __gshared FFIType _ffiFloat;
+    private __gshared FFIType _ffiDouble;
+    private __gshared FFIType _ffiPointer;
 
     @property static FFIType* ffiVoid()
     {
