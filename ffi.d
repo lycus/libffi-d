@@ -297,6 +297,12 @@ struct FFIType
     }
 
     this(FFIType*[] fields)
+    in
+    {
+        foreach (field; fields)
+            assert(field);
+    }
+    body
     {
         _type = new ffi_type();
         _type.type = 13; // FFI_TYPE_STRUCT
@@ -339,61 +345,121 @@ struct FFIType
     private __gshared FFIType _ffiPointer;
 
     @property static FFIType* ffiVoid()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiVoid;
     }
 
     @property static FFIType* ffiByte()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiByte;
     }
 
     @property static FFIType* ffiUByte()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiUByte;
     }
 
     @property static FFIType* ffiShort()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiShort;
     }
 
     @property static FFIType* ffiUShort()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiUShort;
     }
 
     @property static FFIType* ffiInt()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiInt;
     }
 
     @property static FFIType* ffiUInt()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiUInt;
     }
 
     @property static FFIType* ffiLong()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiLong;
     }
 
     @property static FFIType* ffiULong()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiULong;
     }
 
     @property static FFIType* ffiFloat()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiFloat;
     }
 
     @property static FFIType* ffiDouble()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiDouble;
     }
 
     @property static FFIType* ffiPointer()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return &_ffiPointer;
     }
@@ -438,7 +504,7 @@ in
     foreach (param; parameterTypes)
         assert(param);
 
-    if (returnType._type != FFIType.ffiVoid._type)
+    if (returnType != FFIType.ffiVoid)
         assert(returnValue);
 
     foreach (arg; argumentValues)
@@ -473,7 +539,33 @@ body
     return FFIStatus.success;
 }
 
-// Parameters: cif, ret, args, data
+final class FFIClosure
+{
+    private ffi_cif* _cif;
+    private FFIFunction _function;
+
+    private this(ffi_cif* cif, FFIFunction function_)
+    {
+        _cif = cif;
+        _function = function_;
+    }
+
+    ~this()
+    {
+        ffi_closure_free(_function);
+    }
+
+    @property FFIFunction function_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _function;
+    }
+}
+
 alias void function(void*, void**) FFIClosureFunction;
 
 private extern (C) void closureHandler(ffi_cif* cif, void* ret, void** args, FFIClosureFunction callback)
@@ -481,10 +573,10 @@ private extern (C) void closureHandler(ffi_cif* cif, void* ret, void** args, FFI
     callback(ret, args);
 }
 
-FFIFunction ffiCreateClosure(FFIClosureFunction func,
-                             FFIType* returnType,
-                             FFIType*[] parameterTypes,
-                             FFIInterface abi = FFIInterface.platform)
+FFIClosure ffiClosure(FFIClosureFunction func,
+                      FFIType* returnType,
+                      FFIType*[] parameterTypes,
+                      FFIInterface abi = FFIInterface.platform)
 in
 {
     assert(func);
@@ -504,26 +596,16 @@ body
             selectedABI = 2; // FFI_STDCALL
     }
 
-    ffi_cif cif;
+    auto cif = new ffi_cif();
 
-    if (ffi_prep_cif(&cif, cast(ffi_abi)selectedABI, cast(uint)argTypes.length, returnType._type, argTypes.ptr) != ffi_status.FFI_OK)
+    if (ffi_prep_cif(cif, cast(ffi_abi)selectedABI, cast(uint)argTypes.length, returnType._type, argTypes.ptr) != ffi_status.FFI_OK)
         return null;
 
     void* code;
     auto mem = cast(ffi_closure*)ffi_closure_alloc(ffi_closure.sizeof, &code);
 
-    if (ffi_prep_closure_loc(mem, &cif, cast(ffi_closure_fun)&closureHandler, func, code) != ffi_status.FFI_OK)
+    if (ffi_prep_closure_loc(mem, cif, cast(ffi_closure_fun)&closureHandler, func, code) != ffi_status.FFI_OK)
         return null;
 
-    return cast(FFIFunction)code;
-}
-
-void ffiFreeClosure(FFIFunction func)
-in
-{
-    assert(func);
-}
-body
-{
-    ffi_closure_free(func);
+    return new FFIClosure(cif, cast(FFIFunction)code);
 }
