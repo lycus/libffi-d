@@ -543,8 +543,9 @@ final class FFIClosure
 {
     private ffi_cif* _cif;
     private FFIFunction _function;
+    private FFIClosureFunction _closure;
 
-    private this(ffi_cif* cif, FFIFunction function_)
+    private this(ffi_cif* cif, FFIFunction function_, FFIClosureFunction closure)
     {
         _cif = cif;
         _function = function_;
@@ -564,13 +565,24 @@ final class FFIClosure
     {
         return _function;
     }
+
+    @property FFIClosureFunction closure()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _closure;
+    }
 }
 
 alias void delegate(void*, void**) FFIClosureFunction;
 
-private extern (C) void closureHandler(ffi_cif* cif, void* ret, void** args, FFIClosureFunction callback)
+private extern (C) void closureHandler(ffi_cif* cif, void* ret, void** args, FFIClosure closure)
 {
-    callback(ret, args);
+    auto cb = closure.closure;
+    cb(ret, args);
 }
 
 FFIClosure ffiClosure(FFIClosureFunction func,
@@ -604,8 +616,10 @@ body
     void* code;
     auto mem = cast(ffi_closure*)ffi_closure_alloc(ffi_closure.sizeof, &code);
 
-    if (ffi_prep_closure_loc(mem, cif, cast(ffi_closure_fun)&closureHandler, cast(void*)func, code) != ffi_status.FFI_OK)
+    auto closure = new FFIClosure(cif, cast(FFIFunction)code, func);
+
+    if (ffi_prep_closure_loc(mem, cif, cast(ffi_closure_fun)&closureHandler, cast(void*)closure, code) != ffi_status.FFI_OK)
         return null;
 
-    return new FFIClosure(cif, cast(FFIFunction)code);
+    return closure;
 }
