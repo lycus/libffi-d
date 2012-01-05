@@ -549,6 +549,7 @@ final class FFIClosure
     {
         _cif = cif;
         _function = function_;
+        _closure = closure;
     }
 
     ~this()
