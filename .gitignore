@@ -1,6 +1,5 @@
 _*/*
 
-bin/*
 build/*
 
 *.lock*
