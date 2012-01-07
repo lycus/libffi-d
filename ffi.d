@@ -557,24 +557,24 @@ final class FFIClosure
         ffi_closure_free(_function);
     }
 
-    @property FFIFunction function_()
+    @property FFIFunction* function_()
     out (result)
     {
-        assert(result);
+        assert(*result);
     }
     body
     {
-        return _function;
+        return &_function;
     }
 
-    @property FFIClosureFunction closure()
+    @property FFIClosureFunction* closure()
     out (result)
     {
-        assert(result);
+        assert(*result);
     }
     body
     {
-        return _closure;
+        return &_closure;
     }
 }
 
@@ -582,7 +582,7 @@ alias void delegate(void*, void**) FFIClosureFunction;
 
 private extern (C) void closureHandler(ffi_cif* cif, void* ret, void** args, FFIClosure closure)
 {
-    auto cb = closure.closure;
+    auto cb = *closure.closure;
     cb(ret, args);
 }
 
