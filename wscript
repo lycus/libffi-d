@@ -36,6 +36,8 @@ def configure(conf):
         add_option('-O')
         add_option('-inline')
 
+    conf.check_dlibrary()
+
 def build(bld):
     bld.stlib(source = 'ffi.d',
               target = 'ffi-d',
