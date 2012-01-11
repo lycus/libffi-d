@@ -46,3 +46,7 @@ def build(bld):
     bld.stlib(source = 'ffi.d',
               target = 'ffi-d',
               install_path = '${PREFIX}/lib')
+
+def dist(dst):
+    with open('.gitignore', 'r') as f:
+        dst.excl = ' '.join(l.strip() for l in f if l.strip())
