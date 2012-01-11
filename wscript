@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os, shutil
-from waflib import Build, Scripting
+from waflib import Build, Context, Scripting
 
 APPNAME = 'libffi-d'
 VERSION = '1.0'
@@ -82,8 +82,11 @@ class PackageContext(Build.InstallContext):
 
         files = self.tmp.ant_glob('**')
 
+        appname = getattr(Context.g_module, Context.APPNAME, 'noname')
+        version = getattr(Context.g_module, Context.VERSION, '1.0')
+
         ctx = Scripting.Dist()
-        ctx.arch_name = '%s-%s-bin.tar.bz2' % (APPNAME, VERSION)
+        ctx.arch_name = '%s-%s-bin.tar.bz2' % (appname, version)
         ctx.files = files
         ctx.tar_prefix = ''
         ctx.base_path = self.tmp
