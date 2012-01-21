@@ -12,8 +12,8 @@ OUT = 'build'
 def options(opt):
     opt.load('dmd')
 
-    opt.add_option('--lp64', action='store', default='true', help='Compile for 64-bit CPUs (true/false)')
-    opt.add_option('--mode', action='store', default='debug', help='The mode to compile in (debug/release)')
+    opt.add_option('--lp64', action = 'store', default = 'true', help = 'Compile for 64-bit CPUs (true/false)')
+    opt.add_option('--mode', action = 'store', default = 'debug', help = 'The mode to compile in (debug/release)')
 
 def configure(conf):
     def add_option(option):
@@ -60,6 +60,7 @@ class PackageContext(Build.InstallContext):
 
     def init_dirs(self, *k, **kw):
         super(PackageContext, self).init_dirs(*k, **kw)
+
         self.tmp = self.bldnode.make_node('package_tmp_dir')
 
         try:
