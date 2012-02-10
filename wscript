@@ -12,8 +12,8 @@ OUT = 'build'
 def options(opt):
     opt.load('compiler_d')
 
-    opt.add_option('--lp64', action = 'store', default = 'true', help = 'Compile for 64-bit CPUs (true/false)')
-    opt.add_option('--mode', action = 'store', default = 'debug', help = 'The mode to compile in (debug/release)')
+    opt.add_option('--lp64', action = 'store', default = 'true', help = 'compile for 64-bit CPUs (true/false)')
+    opt.add_option('--mode', action = 'store', default = 'debug', help = 'the mode to compile in (debug/release)')
 
 def configure(conf):
     def add_option(option):
