@@ -10,7 +10,7 @@ TOP = '.'
 OUT = 'build'
 
 def options(opt):
-    opt.load('dmd')
+    opt.load('compiler_d')
 
     opt.add_option('--lp64', action = 'store', default = 'true', help = 'Compile for 64-bit CPUs (true/false)')
     opt.add_option('--mode', action = 'store', default = 'debug', help = 'The mode to compile in (debug/release)')
@@ -19,13 +19,39 @@ def configure(conf):
     def add_option(option):
         conf.env.append_value('DFLAGS', option)
 
-    conf.load('dmd')
+    conf.load('compiler_d')
 
-    add_option('-w')
-    add_option('-wi')
-    add_option('-ignore')
-    add_option('-property')
-    add_option('-gc')
+    if conf.env.COMPILER_D == 'dmd':
+        add_option('-w')
+        add_option('-wi')
+        add_option('-ignore')
+        add_option('-property')
+        add_option('-gc')
+
+        if conf.options.mode == 'debug':
+            add_option('-debug')
+        elif conf.options.mode == 'release':
+            add_option('-release')
+            add_option('-O')
+            add_option('-inline')
+        else:
+            conf.fatal('--mode must be either debug or release.')
+    elif conf.env.COMPILER_D == 'gdc':
+        add_option('-Wall')
+        add_option('-fignore-unknown-pragmas')
+        add_option('-fproperty')
+        add_option('-g')
+        add_option('-fdebug-c')
+
+        if conf.options.mode == 'debug':
+            add_option('-fdebug')
+        elif conf.options.mode == 'release':
+            add_option('-frelease')
+            add_option('-O3')
+        else:
+            conf.fatal('--mode must be either debug or release.')
+    else:
+        conf.fatal('Unsupported D compiler.')
 
     if conf.options.lp64 == 'true':
         add_option('-m64')
@@ -33,15 +59,6 @@ def configure(conf):
         add_option('-m32')
     else:
         conf.fatal('--lp64 must be either true or false.')
-
-    if conf.options.mode == 'debug':
-        add_option('-debug')
-    elif conf.options.mode == 'release':
-        add_option('-release')
-        add_option('-O')
-        add_option('-inline')
-    else:
-        conf.fatal('--mode must be either debug or release.')
 
     conf.check_dlibrary()
 
