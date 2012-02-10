@@ -68,6 +68,8 @@ def build(bld):
               install_path = '${PREFIX}/lib')
 
 def dist(dst):
+    '''makes a tarball for redistributing the sources'''
+
     with open('.gitignore', 'r') as f:
         dst.excl = ' '.join(l.strip() for l in f if l.strip())
 
@@ -111,3 +113,8 @@ class PackageContext(Build.InstallContext):
         ctx.archive()
 
         shutil.rmtree(self.tmp.abspath())
+
+def package(ctx):
+    '''packages built binaries into a tarball'''
+
+    pass
