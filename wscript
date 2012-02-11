@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import os, shutil
-from waflib import Build, Context, Scripting
+import os, shutil, sys, tarfile, tempfile
+from waflib import Build, Context, Errors, Options, Scripting, Utils
 
 APPNAME = 'libffi-d'
 VERSION = '1.0'
@@ -73,6 +73,41 @@ def dist(dst):
     with open('.gitignore', 'r') as f:
         dst.excl = ' '.join(l.strip() for l in f if l.strip())
 
+class DistCheckContext(Scripting.Dist):
+    cmd = 'distcheck'
+    fun = 'distcheck'
+
+    def execute(self):
+        self.recurse([os.path.dirname(Context.g_module.root_path)])
+        self.archive()
+        self.check()
+
+    def check(self):
+        with tarfile.open(self.get_arch_name()) as t:
+            for x in t:
+                t.extract(x)
+
+        instdir = tempfile.mkdtemp('.inst', self.get_base_name())
+        cfg = [x for x in sys.argv if x.startswith('-')]
+        ret = Utils.subprocess.Popen([sys.argv[0],
+                                      'configure',
+                                      'install',
+                                      'uninstall',
+                                      '--destdir=' + instdir] + cfg, cwd = self.get_base_name()).wait()
+
+        if ret:
+            self.fatal('distcheck failed with code {0}'.format(ret))
+
+        if os.path.exists(instdir):
+            self.fatal('distcheck succeeded, but files were left in {0}'.format(instdir))
+
+        shutil.rmtree(self.get_base_name())
+
+def distcheck(ctx):
+    '''checks if the project compiles (tarball from 'dist')'''
+
+    pass
+
 class PackageContext(Build.InstallContext):
     cmd = 'package'
     fun = 'build'
@@ -87,7 +122,7 @@ class PackageContext(Build.InstallContext):
         except:
             pass
         if os.path.exists(self.tmp.abspath()):
-            self.fatal('Could not remove the temporary directory %r' % self.tmp)
+            self.fatal('Could not remove the temporary directory {0}'.format(self.tmp))
 
         self.tmp.mkdir()
         self.options.destdir = self.tmp.abspath()
@@ -106,7 +141,7 @@ class PackageContext(Build.InstallContext):
         version = getattr(Context.g_module, Context.VERSION, '1.0')
 
         ctx = Scripting.Dist()
-        ctx.arch_name = '%s-%s-bin.tar.bz2' % (appname, version)
+        ctx.arch_name = '{0}-{1}-bin.tar.bz2'.format(appname, version)
         ctx.files = files
         ctx.tar_prefix = ''
         ctx.base_path = self.tmp
