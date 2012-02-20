@@ -89,6 +89,7 @@ class DistCheckContext(Scripting.Dist):
 
         instdir = tempfile.mkdtemp('.inst', self.get_base_name())
         cfg = [x for x in sys.argv if x.startswith('-')]
+
         ret = Utils.subprocess.Popen([sys.argv[0],
                                       'configure',
                                       'install',
