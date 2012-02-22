@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import os, shutil, sys, tarfile, tempfile
-from waflib import Build, Context, Errors, Options, Scripting, Utils
+from waflib import Build, Configure, Context, Errors, Options, Scripting, Utils
+from waflib.Configure import conf
 
 APPNAME = 'libffi-d'
 VERSION = '1.0'
@@ -50,6 +51,8 @@ def configure(conf):
             add_option('-O3')
         else:
             conf.fatal('--mode must be either debug or release.')
+
+        conf.env.append_value('LINKFLAGS', '-lpthread')
     else:
         conf.fatal('Unsupported D compiler.')
 
@@ -60,7 +63,7 @@ def configure(conf):
     else:
         conf.fatal('--lp64 must be either true or false.')
 
-    conf.check_dlibrary()
+    conf.check_dlibrary_hack(False)
 
 def build(bld):
     bld.stlib(source = 'ffi.d',
@@ -154,3 +157,10 @@ def package(ctx):
     '''packages built binaries into a tarball'''
 
     pass
+
+@conf
+def check_dlibrary_hack(self, execute=True):
+        ret = self.check_cc(features = 'd dprogram', fragment = 'void main() {}', compile_filename = 'test.d', execute = execute, define_ret = True)
+
+        if execute:
+                self.env.DLIBRARY = ret.strip()
