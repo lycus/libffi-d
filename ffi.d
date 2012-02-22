@@ -544,17 +544,19 @@ final class FFIClosure
     private ffi_cif* _cif;
     private FFIFunction _function;
     private FFIClosureFunction _closure;
+    private void* _memory;
 
-    private this(ffi_cif* cif, FFIFunction function_, FFIClosureFunction closure)
+    private this(ffi_cif* cif, void* memory, FFIFunction function_, FFIClosureFunction closure)
     {
         _cif = cif;
+        _memory = memory;
         _function = function_;
         _closure = closure;
     }
 
     ~this()
     {
-        ffi_closure_free(_function);
+        ffi_closure_free(_memory);
     }
 
     @property FFIFunction* function_()
@@ -617,7 +619,7 @@ body
     void* code;
     auto mem = cast(ffi_closure*)ffi_closure_alloc(ffi_closure.sizeof, &code);
 
-    auto closure = new FFIClosure(cif, cast(FFIFunction)code, func);
+    auto closure = new FFIClosure(cif, mem, cast(FFIFunction)code, func);
 
     if (ffi_prep_closure_loc(mem, cif, cast(ffi_closure_fun)&closureHandler, cast(void*)closure, code) != ffi_status.FFI_OK)
         return null;
