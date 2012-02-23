@@ -20,7 +20,7 @@ version (X86)
     }
     else
     {
-        enum FFI_TRAMPOLINE_SIZE = 24;
+        enum FFI_TRAMPOLINE_SIZE = 10;
     }
 }
 else version (X86_64)
@@ -41,7 +41,7 @@ else version (X86_64)
             FFI_DEFAULT_ABI = 2, // FFI_UNIX64
         }
 
-        enum FFI_TRAMPOLINE_SIZE = 10;
+        enum FFI_TRAMPOLINE_SIZE = 24;
     }
 }
 else version (ARM)
