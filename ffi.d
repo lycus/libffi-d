@@ -13,15 +13,6 @@ version (X86)
     {
         FFI_DEFAULT_ABI = 1, // FFI_SYSV
     }
-
-    version (Windows)
-    {
-        enum FFI_TRAMPOLINE_SIZE = 13;
-    }
-    else
-    {
-        enum FFI_TRAMPOLINE_SIZE = 10;
-    }
 }
 else version (X86_64)
 {
@@ -31,8 +22,6 @@ else version (X86_64)
         {
             FFI_DEFAULT_ABI = 1, // FFI_WIN64
         }
-
-        enum FFI_TRAMPOLINE_SIZE = 29;
     }
     else
     {
@@ -40,8 +29,6 @@ else version (X86_64)
         {
             FFI_DEFAULT_ABI = 2, // FFI_UNIX64
         }
-
-        enum FFI_TRAMPOLINE_SIZE = 24;
     }
 }
 else version (ARM)
@@ -51,8 +38,6 @@ else version (ARM)
         // TODO: Check for VFP (FFI_VFP).
         FFI_DEFAULT_ABI = 1, // FFI_SYSV
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 20;
 }
 else version (PPC)
 {
@@ -85,23 +70,12 @@ else version (PPC)
             FFI_DEFAULT_ABI = 2, // FFI_GCC_SYSV
         }
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 40;
 }
 else version (PPC64)
 {
     enum ffi_abi
     {
         FFI_DEFAULT_ABI = 3, // FFI_LINUX64
-    }
-
-    version (OSX)
-    {
-        enum FFI_TRAMPOLINE_SIZE = 48;
-    }
-    else
-    {
-        enum FFI_TRAMPOLINE_SIZE = 24;
     }
 }
 else version (IA64)
@@ -110,8 +84,6 @@ else version (IA64)
     {
         FFI_DEFAULT_ABI = 1, // FFI_UNIX
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 24;
 }
 else version (MIPS)
 {
@@ -121,8 +93,6 @@ else version (MIPS)
         // TODO: Detect O32 vs N32.
         FFI_DEFAULT_ABI = 1, // FFI_O32
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 20;
 }
 else version (MIPS64)
 {
@@ -130,8 +100,6 @@ else version (MIPS64)
     {
         FFI_DEFAULT_ABI = 3, // FFI_N64
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 20;
 }
 else version (SPARC)
 {
@@ -139,8 +107,6 @@ else version (SPARC)
     {
         FFI_DEFAULT_ABI = 1, // FFI_V8
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 16;
 }
 else version (SPARC64)
 {
@@ -148,8 +114,6 @@ else version (SPARC64)
     {
         FFI_DEFAULT_ABI = 3, // FFI_V9
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 24;
 }
 else version (S390)
 {
@@ -157,8 +121,6 @@ else version (S390)
     {
         FFI_DEFAULT_ABI = 1, // FFI_SYSV
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 16;
 }
 else version (S390X)
 {
@@ -166,8 +128,6 @@ else version (S390X)
     {
         FFI_DEFAULT_ABI = 1, // FFI_SYSV
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 32;
 }
 else version (HPPA)
 {
@@ -175,8 +135,6 @@ else version (HPPA)
     {
         FFI_DEFAULT_ABI = 1, // FFI_PA32
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 32;
 }
 else version (HPPA64)
 {
@@ -184,9 +142,6 @@ else version (HPPA64)
     {
         FFI_DEFAULT_ABI = 1, // FFI_PA64
     }
-
-    // TODO: Verify validity of this.
-    enum FFI_TRAMPOLINE_SIZE = 40;
 }
 else version (SH)
 {
@@ -194,8 +149,6 @@ else version (SH)
     {
         FFI_DEFAULT_ABI = 1, // FFI_SYSV
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 16;
 }
 else version (SH64)
 {
@@ -203,8 +156,6 @@ else version (SH64)
     {
         FFI_DEFAULT_ABI = 1, // FFI_SYSV
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 32;
 }
 else version (Alpha)
 {
@@ -212,11 +163,9 @@ else version (Alpha)
     {
         FFI_DEFAULT_ABI = 1, // FFI_OSF
     }
-
-    enum FFI_TRAMPOLINE_SIZE = 24;
 }
 else
-static assert(false, "Unsupported architecture/platform.");
+    static assert(false, "Unsupported architecture/platform.");
 
 struct ffi_type
 {
@@ -238,7 +187,7 @@ struct ffi_cif
 
 struct ffi_closure
 {
-    char[FFI_TRAMPOLINE_SIZE] tramp;
+    char[128] tramp;
     ffi_cif* cif;
     ffi_closure_fun fun;
     void* user_data;
