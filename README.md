@@ -32,5 +32,5 @@ Limitations
 * This binding only supports the native C calling
   convention (i.e. cdecl) on all platforms, and
   'stdcall' on Windows.
-* There is not support for functions with variadic
+* There is no support for functions with variadic
   argument lists.
