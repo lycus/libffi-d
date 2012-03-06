@@ -65,8 +65,6 @@ def configure(conf):
     else:
         conf.fatal('--lp64 must be either true or false.')
 
-    conf.check_dlibrary_hack(False)
-
 def build(bld):
     bld.stlib(source = 'ffi.d',
               target = 'ffi-d',
@@ -159,10 +157,3 @@ def package(ctx):
     '''packages built binaries into a tarball'''
 
     pass
-
-@conf
-def check_dlibrary_hack(self, execute=True):
-        ret = self.check_cc(features = 'd dprogram', fragment = 'void main() {}', compile_filename = 'test.d', execute = execute, define_ret = True)
-
-        if execute:
-                self.env.DLIBRARY = ret.strip()
