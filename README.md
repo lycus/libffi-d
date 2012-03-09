@@ -30,7 +30,8 @@ Limitations
 * This binding assumes the presence of the closure API.
 * The raw API is not bound.
 * This binding only supports the native C calling
-  convention (i.e. cdecl) on all platforms, and
+  convention (i.e. 'cdecl') on all platforms, and
   'stdcall' on Windows.
 * There is no support for functions with variadic
   argument lists.
+* The Java-specific API is not bound.
