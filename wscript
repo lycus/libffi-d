@@ -5,7 +5,7 @@ from waflib import Build, Context, Options, Scripting, Utils
 from waflib.Configure import conf
 
 APPNAME = 'libffi-d'
-VERSION = '1.0'
+VERSION = '1.1'
 
 TOP = '.'
 OUT = 'build'
