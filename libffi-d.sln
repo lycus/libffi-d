@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "libffi_d", "libffi-d.visualdproj", "{9375480A-9B77-4DE3-B19E-F40FB454A879}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 11
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "libffi-d", "libffi-d.visualdproj", "{9375480A-9B77-4DE3-B19E-F40FB454A879}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
