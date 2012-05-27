@@ -7,7 +7,7 @@ from waflib.Configure import conf
 APPNAME = 'libffi-d'
 VERSION = '1.0'
 
-TOP = '.'
+TOP = os.curdir
 OUT = 'build'
 
 def options(opt):
