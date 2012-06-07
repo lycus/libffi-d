@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import os, shutil, sys, tarfile, tempfile
-from waflib import Build, Context, Options, Scripting, Utils
-from waflib.Configure import conf
+from waflib import Build, Context, Scripting, Utils
 
 APPNAME = 'libffi-d'
 VERSION = '1.0'
