@@ -17,10 +17,10 @@ def options(opt):
     opt.add_option('--mode', action = 'store', default = 'debug', help = 'the mode to compile in (debug/release)')
 
 def configure(conf):
+    conf.load('compiler_d')
+
     def add_option(option):
         conf.env.append_value('DFLAGS', option)
-
-    conf.load('compiler_d')
 
     if conf.env.COMPILER_D == 'dmd':
         add_option('-w')
