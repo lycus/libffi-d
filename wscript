@@ -4,7 +4,7 @@ import os, shutil, sys, tarfile, tempfile
 from waflib import Build, Context, Scripting, Utils
 
 APPNAME = 'libffi-d'
-VERSION = '1.0'
+VERSION = '1.1'
 
 TOP = os.curdir
 OUT = 'build'
