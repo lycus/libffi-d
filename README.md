@@ -12,10 +12,7 @@ the return type, parameter types, and the ABI.
 Building
 --------
 
-On Windows, load up libffi-d.sln in Visual D and build
-in either Debug or Release mode.
-
-On all other systems, you build libffi-d by using Waf:
+You build libffi-d by using Waf:
 
     $ waf configure --lp64=true --mode=release
     $ waf build
