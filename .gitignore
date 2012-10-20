@@ -2,7 +2,7 @@ build/*
 
 waf
 
-*.lock-*
-*.waf-*
+.lock-*
+.waf-*
 
 *.orig
