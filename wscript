@@ -81,8 +81,7 @@ def configure(conf):
 
 def build(bld):
     bld.stlib(source = 'ffi.d',
-              target = 'ffi-d',
-              install_path = '${PREFIX}/lib')
+              target = 'ffi-d')
 
 def dist(dst):
     '''makes a tarball for redistributing the sources'''
