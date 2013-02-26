@@ -193,7 +193,7 @@ struct ffi_closure
     void* user_data;
 }
 
-extern (C) nothrow
+extern (C)
 {
     alias void function(ffi_cif*, void*, void**, void*) ffi_closure_fun;
 
@@ -213,27 +213,30 @@ extern (C) nothrow
         ffi_type ffi_type_pointer;
     }
 
-    ffi_status ffi_prep_cif(ffi_cif* cif,
-                            ffi_abi abi,
-                            uint nargs,
-                            ffi_type* rtype,
-                            ffi_type** atypes);
+    nothrow
+    {
+        ffi_status ffi_prep_cif(ffi_cif* cif,
+                                ffi_abi abi,
+                                uint nargs,
+                                ffi_type* rtype,
+                                ffi_type** atypes);
 
-    void ffi_call(ffi_cif* cif,
-                  void* fn,
-                  void* rvalue,
-                  void** avalue);
+        void ffi_call(ffi_cif* cif,
+                      void* fn,
+                      void* rvalue,
+                      void** avalue);
 
-    void* ffi_closure_alloc(size_t size,
-                            void** code);
+        void* ffi_closure_alloc(size_t size,
+                                void** code);
 
-    void ffi_closure_free(void* writable);
+        void ffi_closure_free(void* writable);
 
-    ffi_status ffi_prep_closure_loc(ffi_closure* closure,
-                                    ffi_cif* cif,
-                                    ffi_closure_fun fun,
-                                    void* user_data,
-                                    void* codeloc);
+        ffi_status ffi_prep_closure_loc(ffi_closure* closure,
+                                        ffi_cif* cif,
+                                        ffi_closure_fun fun,
+                                        void* user_data,
+                                        void* codeloc);
+    }
 }
 
 struct FFIType
