@@ -193,7 +193,7 @@ struct ffi_closure
     void* user_data;
 }
 
-extern (C)
+extern (C) nothrow
 {
     alias void function(ffi_cif*, void*, void**, void*) ffi_closure_fun;
 
